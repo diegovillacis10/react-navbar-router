@@ -1,24 +1,33 @@
+import { Link, useMatch, useResolvedPath } from "react-router-dom";
+
 export default function Navbar() {
   return (
     <nav className="nav">
-      <a href="/" className="site-title">
+      <Link to="/" className="site-title">
         Site name
-      </a>
+      </Link>
       <ul>
-        <CustmonLink href="/pricing">Pricing</CustmonLink>
-        <CustmonLink href="/about">About</CustmonLink>
+        <CustmonLink to="/pricing">Pricing</CustmonLink>
+        <CustmonLink to="/about">About</CustmonLink>
       </ul>
     </nav>
   );
 }
 
-function CustmonLink({ href, children, ...props }) {
-  const path = window.location.pathname;
+function CustmonLink({ to, children, ...props }) {
+  // useMatch compared the current path that we are on to whatever path we want
+  // With react router you can have relative/absolute paths.
+  //  useResolvedPath takes relative or abs path and combines it with the
+  //  current path you are on gives you the full path
+  const resolvedPath = useResolvedPath(to);
+  // end: true means that the entire path must match
+  const isActive = useMatch({ path: resolvedPath.pathname, end: true });
+
   return (
-    <li className={path === href ? "active" : ""}>
-      <a href={href} {...props}>
+    <li className={isActive ? "active" : ""}>
+      <Link to={to} {...props}>
         {children}
-      </a>
+      </Link>
     </li>
   );
 }
